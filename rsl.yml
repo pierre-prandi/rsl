@@ -1,0 +1,80 @@
+#-----------------------------------------------------------------------
+# input dataset definition
+input: 
+  filename: /Users/pierre/Downloads/77853.nc
+  variable: sea_level_anomaly
+
+#-----------------------------------------------------------------------
+# conversion factors from input units (m/days since 1950-01-01) to desired units (mm/yr)
+t_fact: 0.0027371014096072258
+t_offset: 1950.
+z_fact: 1000.
+
+#-----------------------------------------------------------------------
+# output files and units
+output: ./test.nc
+output_t_unit: 'yr'
+output_z_unit: 'mm'
+
+#-----------------------------------------------------------------------
+# sigma to ci conversionsn this is dependent on DOF (time series length roughly)
+# and should be updated to the appropriate Student quantile.
+# 1.65 <-> 90%
+# 1.96 <-> 95%
+ci_fact: 1.706
+
+#-----------------------------------------------------------------------
+# list of errors, each error source listed here should be described
+# by a dedicated dict in the conf file
+errors:
+  - tp_bias
+  - j1_bias
+  - j2_bias
+  - j3_bias
+  - hf_noise
+  - orbit_drift
+  - tropo_noise
+  - gia
+
+#-----------------------------------------------------------------------
+# error description
+# error values are provided at 1 sigma level
+# each error is described by a dict following:
+# error: {type: ,       # this either noise, drift or bias,
+#           value: ,    # if the error has a unique value,
+#           source: ,   # lat/lon netCDF file containing a map of local error values (either value or source must be used)
+#           variable: , # if source is defined, then the variable of the grid in the file must be provided
+#           factor: ,   # factor to be applied to variable in source to convert to output_units
+#           timing: ,   # is error is of bias type, a timing in outpu units must be provided
+#           timescale,  # if error is of type noise, a time decorrelation scale must be provided in output units
+#       }
+tp_bias: {type: bias,
+            value: 10.,
+            timing: 1999.13}
+j1_bias: {type: bias,
+            value: 10.,
+            timing: 2002.31}
+j2_bias: {type: bias,
+            value: 6.,
+            timing: 2008.81}
+j3_bias: {type: bias,
+            value: 6.,
+            timing: 2016.4}            
+hf_noise: {type: noise,
+            source: /Users/pierre/Downloads/77853.nc,
+            variable: hf_noise,
+            factor: 1.,
+            timescale: 0.16}
+orbit_drift: {type: drift,
+                value: 0.33}
+tropo_noise: {type: noise,
+                source: /Users/pierre/Downloads/77853.nc,
+                variable: wtc_noise,
+                timescale: 10.,
+                factor: 1.}                
+gia: {type: drift,
+        source: /Users/pierre/Downloads/77853.nc,
+        variable: gia_drift,
+        factor: 1.}
+
+
