@@ -99,7 +99,8 @@ for ilon, clon in enumerate(x):
             y_vals, 
             covar.omega,
             deg=2)
-        accel[ilon,ilat] = beta_hat[-1]
+        # acceleration = twice quadratic coeff
+        accel[ilon,ilat] = beta_hat[-1]*2.
         accelci[ilon,ilat] = var_beta_hat[-1]*conf['ci_fact']
         cnt+=1
 
