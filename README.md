@@ -1,6 +1,6 @@
 # RLS
 
-This repository holds the code necessary to reproduce the analysis presented in our paper on local sea level uncertainties (link to come).
+This repository holds the code necessary to reproduce the analysis presented in our paper on local sea level uncertainties which can be found [here](https://doi.org/10.1038/s41597-020-00786-7).
 
 ## requirements
 
