@@ -6,9 +6,43 @@
 '''
 
 from netCDF4 import Dataset
+from timeserie import Timeserie
 import numpy as np
 
-def loader(fname, 
+def loader(fname,
+    varname,
+    load_type='grid',
+    lon='longitude',
+    lat='latitude',
+    time='time'):
+    """
+    wrapper for different data loaders
+    """
+    if load_type=='grid':
+        return grid_loader(fname, varname, lon=lon, lat=lat, time=time)
+    elif load_type=='cci':
+        return cci_loader(fname, varname, lon=lon, lat=lat, time=time)
+    else:
+        raise Exception(f"load_type {load_type} unknown")
+
+def cci_loader(fname, varname, lon='longitude', lat='latitude', time='time'):
+    """
+    reads data from CCI virtual coastal stations files
+    """
+    outdict = {}
+    with Dataset(fname, 'r') as nc:
+        longitudes = nc.variables[lon][:]
+        latitudes = nc.variables[lat][:]
+        dates = np.variables[time][:]
+        sla = nc.variables[varname][:]
+    (npoints, ntimes) = np.shape(sla)
+    for ipt in np.arange(npoints):
+        key = (longitudes[ipt], latitude[ipt])
+        value = Timeserie(dates, sla[ipt,:].filled(np.nan))
+        outdict[key] = value
+    return outdict
+
+def grid_loader(fname, 
     varname, 
     lon='longitude', 
     lat='latitude',
